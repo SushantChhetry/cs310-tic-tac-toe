@@ -1,56 +1,62 @@
 package edu.jsu.mcis;
 
-import java.io.Console;
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JButton;
 
-public class TicTacToeController {
+public class TicTacToeController implements ActionListener {
 
     private final TicTacToeModel model;
     private final TicTacToeView view;
-    
-    /* CONSTRUCTOR */
 
     public TicTacToeController(int width) {
         
-        /* Initialize model, view, and width */
-
-        model = new TicTacToeModel(width);
-        view = new TicTacToeView();
+    	model = new TicTacToeModel(width);
+        view = new TicTacToeView(this, width);
         
     }
-
-    public void start() {
-        /*
-       /* MAIN LOOP (repeats until game is over) */
-        int row = 0;
-        int col = 0;
-       
-        /* Displays the board using the View's "showBoard()", then uses
-           "getNextMove()" to get the next move from the player.  Enters
-           the move (using the Model's "makeMark()", or displays an error
-           using the View's "showInputError()" if the move is invalid. */
+    
+    public String getMarkAsString(int row, int col) {
         
-        while (model.isGameover() == false) {
-            
+        return (model.getMark(row, col).toString());
+        
+    }
+    
+    public TicTacToeView getView() {
+        
+        return view;
+        
+    }
+    
+    @Override
+    public void actionPerformed(ActionEvent event) {
+        
+        String name = ((JButton) event.getSource()).getName();
+        
+        int row = Integer.parseInt(name.substring(6,7));
+        int col = Integer.parseInt(name.substring(7));
+        
+        
+        model.makeMark(row, col);
+        
+        view.updateSquares();
+        
+        TicTacToeModel.Result result = model.getResult();
+        
+        if (result != TicTacToeModel.Result.NONE) {
 
-            view.showBoard(model.toString());
-            TicTacToeMove move = view.getNextMove(model.isXTurn());
+            view.disableSquares();
+            view.showResult(result.toString());
             
-            row = move.getRow();
-            col = move.getCol(); 
-
-            boolean isValidMove = model.makeMark(row, col);
-			
-            if (!isValidMove) {
-                view.showInputError();
-            }
-          
         }
         
-        /* After the game is over, shows the final board and the winner */
+        else {
+            
+            view.clearResult();
+            
+        }
 
-        view.showBoard(model.toString());
-
-        view.showResult(model.getResult().toString());
-
-}
+    }
+    
 }
