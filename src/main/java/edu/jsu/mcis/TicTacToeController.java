@@ -1,5 +1,7 @@
 package edu.jsu.mcis;
 
+import java.io.Console;
+
 public class TicTacToeController {
 
     private final TicTacToeModel model;
@@ -17,22 +19,38 @@ public class TicTacToeController {
     }
 
     public void start() {
-    
-        /* MAIN LOOP (repeats until game is over) */
-
-        /* Display the board using the View's "showBoard()", then use
-           "getNextMove()" to get the next move from the player.  Enter
-           the move (using the Model's "makeMark()", or display an error
+        /*
+       /* MAIN LOOP (repeats until game is over) */
+        int row = 0;
+        int col = 0;
+       
+        /* Displays the board using the View's "showBoard()", then uses
+           "getNextMove()" to get the next move from the player.  Enters
+           the move (using the Model's "makeMark()", or displays an error
            using the View's "showInputError()" if the move is invalid. */
-
-        // INSERT YOUR CODE HERE
         
-        /* After the game is over, show the final board and the winner */
+        while (model.isGameover() == false) {
+            
+
+            view.showBoard(model.toString());
+            TicTacToeMove move = view.getNextMove(model.isXTurn());
+            
+            row = move.getRow();
+            col = move.getCol(); 
+
+            boolean isValidMove = model.makeMark(row, col);
+			
+            if (!isValidMove) {
+                view.showInputError();
+            }
+          
+        }
+        
+        /* After the game is over, shows the final board and the winner */
 
         view.showBoard(model.toString());
 
         view.showResult(model.getResult().toString());
-        
-    }
 
+}
 }
